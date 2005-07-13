@@ -1,7 +1,6 @@
-<use name=FWCore/CoreFramework>
-<use name=DataFormats/FEDRawData>
+<use name=FWCore/Framework>
 
-<use name=DataFormats/DTDigis>
+
 
 <library file=stubs/DummyHitFinderModule.cc name=DummyHitFinderModule>
    <flags SEAL_PLUGIN_NAME="DummyHitFinderModule"> 
