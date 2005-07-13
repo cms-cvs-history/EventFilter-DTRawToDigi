@@ -1,0 +1,15 @@
+<use name=FWCore/CoreFramework>
+<use name=DataFormats/FEDRawData>
+
+<use name=DataFormats/DTDigis>
+
+<library file=stubs/DummyHitFinderModule.cc name=DummyHitFinderModule>
+   <flags SEAL_PLUGIN_NAME="DummyHitFinderModule"> 
+   <use name=cppunit>
+   <use name=DataFormats/DTDigis>
+</library> 
+
+
+<bin name=testDTUnpackingModule file=testRunner.cpp,testDTUnpackingModule.cc>
+   <use name=cppunit>
+</bin>
