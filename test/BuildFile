@@ -6,7 +6,7 @@
 <library file=stubs/DummyHitFinderModule.cc name=DummyHitFinderModule>
    <flags SEAL_PLUGIN_NAME="DummyHitFinderModule"> 
    <use name=cppunit>
-   <use name=DataFormats/DTDigis>
+   <use name=DataFormats/DTDigi>
 </library> 
 
 
