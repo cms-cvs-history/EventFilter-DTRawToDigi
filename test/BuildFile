@@ -10,6 +10,6 @@
 </library> 
 
 
-<bin name=testDTUnpackingModule file=testRunner.cpp,testDTUnpackingModule.cc>
-   <use name=cppunit>
-</bin>
+#<bin name=testDTUnpackingModule file=testRunner.cpp,testDTUnpackingModule.cc>
+#   <use name=cppunit>
+#</bin>
