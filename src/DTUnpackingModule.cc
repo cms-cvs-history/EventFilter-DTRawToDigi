@@ -1,7 +1,7 @@
 /** \file
  *
- *  $Date: 2005/10/31 12:29:17 $
- *  $Revision: 1.6 $
+ *  $Date: 2005/10/31 13:18:56 $
+ *  $Revision: 1.7 $
  *  \author S. Argiro - N. Amapane - M. Zanetti 
  */
 
@@ -15,6 +15,9 @@
 #include <FWCore/Framework/interface/Event.h>
 
 #include <EventFilter/DTRawToDigi/src/DTDDUWords.h>
+
+#include <CondFormats/DataRecord/interface/DTReadOutMappingRcd.h>
+#include <CondFormats/DTMapping/interface/DTReadOutMapping.h>
 
 using namespace edm;
 using namespace std;
@@ -35,6 +38,14 @@ DTUnpackingModule::~DTUnpackingModule(){
 
 
 void DTUnpackingModule::produce(Event & e, const EventSetup& c){
+
+  // Create the result 
+  auto_ptr<DTDigiCollection> product(new DTDigiCollection);
+
+  // Get the mapping from the setup
+  edm::ESHandle<DTReadOutMapping> mapping;
+  context.get<DTReadOutMappingRcd>().get(mapping);
+
 
   Handle<FEDRawDataCollection> rawdata;
   e.getByLabel("DaqRawData", rawdata);
@@ -109,6 +120,16 @@ void DTUnpackingModule::produce(Event & e, const EventSetup& c){
   		  if (wordType.type() == DTROSWordType::TDCMeasurement) {
 		    DTTDCMeasurementWord tdcMeasurementWord(index);
 		    int tdcTime = tdcMeasurementWord.tdcTime(); // THE DATUM
+		    
+		    // Get the DetId and wire #
+		    DTDetId layer;
+		    int wire = 0;
+		    // This method is still missing
+		    mapping->getId(DDU, ROS, ROB, TDC, Channel, layer, wire);
+		    
+		    DTDigi digi(tdcTime, wire);
+		    digicollection.insertDigi(layer,digi);
+		      
   		  }
   		} while ( wordType.type() != DTROSWordType::TDCTrailer );
 
@@ -145,6 +166,10 @@ void DTUnpackingModule::produce(Event & e, const EventSetup& c){
       
     }
   } 
+
+
+
+
   // commit to the event  
   //  e.put(product);
 }
