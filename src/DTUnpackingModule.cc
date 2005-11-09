@@ -1,7 +1,7 @@
 /** \file
  *
- *  $Date: 2005/11/06 00:00:05 $
- *  $Revision: 1.7.2.1 $
+ *  $Date: 2005/11/09 13:20:48 $
+ *  $Revision: 1.7.2.2 $
  *  \author S. Argiro - N. Amapane - M. Zanetti 
  */
 
@@ -79,7 +79,7 @@ void DTUnpackingModule::produce(Event & e, const EventSetup& context){
       // Check Status Words
       DTDDUFirstStatusWord dduStatusWord1(index+feddata.size() - 3*SLINK_WORD_SIZE);
       
-      //DTDDUSecondStatusWord Status dduStatusWord2(index+feddata.size() - 2*SLINK_WORD_SIZE);
+      DTDDUSecondStatusWord dduStatusWord2(index+feddata.size() - 2*SLINK_WORD_SIZE);
 
 
       // Set the index to start looping on ROS data
