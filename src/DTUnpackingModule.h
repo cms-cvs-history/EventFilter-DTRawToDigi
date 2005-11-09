@@ -4,9 +4,9 @@
 /** \class DTUnpackingModule
  *  The unpacking module for DTs.
  *
- *  $Date: 2005/10/07 09:24:10 $
- *  $Revision: 1.1 $
- * \author N. Amapane - S. Argiro'
+ *  $Date: 2005/10/31 12:29:17 $
+ *  $Revision: 1.2 $
+ * \author N. Amapane - S. Argiro' - M. Zanetti
  */
 
 #include <FWCore/Framework/interface/EDProducer.h>
