@@ -1,7 +1,7 @@
 /** \file
  *
- *  $Date: 2006/02/14 17:09:18 $
- *  $Revision: 1.8 $
+ *  $Date: 2006/03/02 17:44:42 $
+ *  $Revision: 1.10 $
  *  \author  M. Zanetti - INFN Padova 
  */
 
@@ -41,7 +41,7 @@ void DTROS8Unpacker::interpretRawData(const unsigned int* index, int datasize,
   for ( int i = 1; i < numberOfWords; i++ ) {
 
     // The word
-    int word = index[i];
+    uint32_t word = index[i];
 
     // The word type
     int type = ( word >> 28 ) & 0xF;
@@ -78,7 +78,7 @@ void DTROS8Unpacker::interpretRawData(const unsigned int* index, int datasize,
 	// Commissioning
 	//dduID = 5;
 	// Sector Test
-	dduID = 734;
+	dduID = 730;
 
 	// Map the RO channel to the DetId and wire
 	DTWireId detId = mapping->readOutToGeometry(dduID, rosID, robID, tdcID, tdcChannel);
