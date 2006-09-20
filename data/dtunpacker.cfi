@@ -1,0 +1,22 @@
+# Module for DT data unpacking: produces a DTDigiCollection and - on demand - 
+# a DTLocalTriggerCollection
+
+	module dtunpacker = DTUnpackingModule{ 
+
+# type of data readout:
+#		string dataType = "ROS8" 
+		string dataType = "DDU" 
+
+# switch on persistence of local trigger data:
+		untracked bool writeSC = true
+
+		untracked bool debugMode = false
+
+                untracked bool readingDDU = true 
+		untracked bool isRaw = true 
+
+# when reading data from local DAQ, the dduID must be specified:
+		untracked bool globalDAQ = false
+                untracked int32 dduID = 770
+
+		untracked bool performDataIntegrityMonitor = false }
