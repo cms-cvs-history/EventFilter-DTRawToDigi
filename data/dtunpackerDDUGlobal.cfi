@@ -1,0 +1,25 @@
+# Module for DT data unpacking: produces a DTDigiCollection and - on demand - 
+# a DTLocalTriggerCollection
+# Configuration for Global DAQ at MTCC
+
+	module dtunpacker = DTUnpackingModule{ 
+
+# type of data readout:
+		string dataType = "DDU" 
+
+# select DDU channels used for ROS's
+                untracked bool readingDDU = true 
+		untracked bool isRaw = false
+
+# when reading data from local DAQ, the dduID must be specified:
+		untracked bool globalDAQ = true
+
+# switch on persistence of local trigger data:
+		untracked bool writeSC = false
+
+# unpacking debugger
+		untracked bool debugMode = false
+
+# on line monitor
+
+		untracked bool performDataIntegrityMonitor = false }
