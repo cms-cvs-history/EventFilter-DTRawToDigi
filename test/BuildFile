@@ -4,13 +4,13 @@
 
 
 <library file=stubs/DummyHitFinderModule.cc name=DummyHitFinderModule>
-   <flags SEAL_PLUGIN_NAME="DummyHitFinderModule"> 
+   <flags EDM_PLUGIN=1> 
    <use name=cppunit>
    <use name=DataFormats/DTDigi>
 </library> 
 
 <library file=FilterByLTC/*.cc name=testFilterByLTC>
-   <flags SEAL_PLUGIN_NAME="testFilterByLTC">
+   <flags EDM_PLUGIN=1>
    <use name=DataFormats/LTCDigi>
 </library>
 
