@@ -1,6 +1,6 @@
 <use name=FWCore/Framework>
 <use name=FWCore/Utilities>
-<use name=EventFilter/DTRawToDigi>
+#<use name=EventFilter/DTRawToDigi>
 
 
 <library file=stubs/DummyHitFinderModule.cc name=DummyHitFinderModule>
