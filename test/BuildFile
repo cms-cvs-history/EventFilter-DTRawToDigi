@@ -1,14 +1,9 @@
 <use name=FWCore/Framework>
 <use name=FWCore/Utilities>
-<use name=EventFilter/DTRawToDigi>
-
 
 <library file=FilterByLTC/*.cc name=testFilterByLTC>
-   <flags SEAL_PLUGIN_NAME="testFilterByLTC">	
+   <flags EDM_PLUGIN=1>	
    <use name=DataFormats/LTCDigi>
 </library>
 
 
-#<bin name=testDTUnpackingModule file=testRunner.cpp,testDTUnpackingModule.cc>
-#   <use name=cppunit>
-#</bin>
