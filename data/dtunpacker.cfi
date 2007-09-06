@@ -1,7 +1,7 @@
 # Module for DT data unpacking: produces a DTDigiCollection and - on demand - 
 # a DTLocalTriggerCollection
 
-module dtunpacker = DTUnpackingModule {
+module muonDTDigis = DTUnpackingModule {
     string dataType = "DDU"
     untracked bool fedbyType = true
     untracked bool useStandardFEDid = true
