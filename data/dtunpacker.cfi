@@ -4,7 +4,7 @@
 module muonDTDigis = DTUnpackingModule {
     string dataType = "DDU"
     untracked bool fedbyType = false
-    untracked string fedColl = source
+    untracked string fedColl = "source"
     untracked bool useStandardFEDid = true
     PSet readOutParameters  = {
 	untracked bool localDAQ = false
