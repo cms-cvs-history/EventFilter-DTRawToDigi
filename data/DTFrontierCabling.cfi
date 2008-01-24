@@ -1,0 +1,7 @@
+es_source DTCabling = PoolDBESSource {
+   using CondDBSetup
+   string connect = "frontier://FrontierDev/CMS_COND_DT"
+   untracked bool siteLocalConfig = true
+   string timetype = "runnumber"
+   VPSet toGet = {{ string record = "DTReadOutMappingRcd" string tag ="DTROMap" }}
+}
