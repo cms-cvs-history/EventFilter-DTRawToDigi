@@ -1,5 +1,4 @@
 # To be used on SQLite files.  AFS access not required.
-include "CondCore/DBCommon/data/CondDBSetup.cfi"
 es_source DTCabling = PoolDBESSource { 
    using CondDBSetup
    string connect = "sqlite_fip:CondCore/SQLiteData/data/DTFullMap_fix17X.db"
