@@ -1,7 +1,0 @@
-module dtpacker = DTDigiToRawModule { 
-   untracked bool useStandardFEDid = false 
-   untracked int32 minFEDid = 771
-   untracked int32 maxFEDid = 775
-   untracked bool debugMode = false
-   untracked bool digibytype = true
-}
