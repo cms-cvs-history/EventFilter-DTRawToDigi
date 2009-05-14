@@ -1,7 +1,7 @@
 /** \file
  *
- *  $Date: 2008/06/19 13:36:58 $
- *  $Revision: 1.8 $
+ *  $Date: 2009/04/06 16:28:50 $
+ *  $Revision: 1.12 $
  *  \author  M. Zanetti - INFN Padova
  *  \revision FRC 060906
  */
@@ -237,10 +237,10 @@ void DTROS25Unpacker::interpretRawData(const unsigned int* index, int datasize,
 		detectorProduct->insertDigi(detId.layerId(),digi);
 	      }
 	      else {
-		LogWarning ("DTRawToDigi|DTROS25Unpacker") <<"Unable to map the RO channel. DDU"<<dduID
-					  <<"ROS"<<rosID<<"ROB"<<robID<<"TDC"<<tdcID<<"TDC channel"<<tdcChannel;
-		if (debug) cout<<"[DTROS25Unpacker] ***ERROR***  Missing wire: DDU"<<dduID
-			       <<"ROS"<<rosID<<"ROB"<<robID<<"TDC"<<tdcID<<"TDC channel"<<tdcChannel<<endl;
+		LogWarning ("DTRawToDigi|DTROS25Unpacker") <<"Unable to map the RO channel: DDU "<<dduID
+					  <<" ROS "<<rosID<<" ROB "<<robID<<" TDC "<<tdcID<<" TDC ch. "<<tdcChannel;
+		if (debug) cout<<"[DTROS25Unpacker] ***ERROR***  Missing wire: DDU "<<dduID
+			       <<" ROS "<<rosID<<" ROB "<<robID<<" TDC "<<tdcID<<" TDC ch. "<<tdcChannel<<endl;
 	      }
 
 	    } // TDC information
@@ -261,18 +261,22 @@ void DTROS25Unpacker::interpretRawData(const unsigned int* index, int datasize,
 	// Check the eventual Sector Collector Header
 	else if (DTROSWordType(word).type() == DTROSWordType::SCHeader) {
 	  DTLocalTriggerHeaderWord scHeaderWord(word);
-	  if (debug) cout<<"[DTROS25Unpacker]: SCHeader  eventID "<<scHeaderWord.eventID()<<endl;
+	  if (debug) cout<<"[DTROS25Unpacker]: SC header  eventID " << scHeaderWord.eventID()<<endl;
 
 	  // RT added : first word following SCHeader is a SC private header
 	  wordCounter++; word = index[swap(wordCounter)];
 
-	  if(DTROSWordType(word).type() == DTROSWordType::SCData){
+	  if(DTROSWordType(word).type() == DTROSWordType::SCData) {
 	    DTLocalTriggerSectorCollectorHeaderWord scPrivateHeaderWord(word);
+	    
+	    if(performDataIntegrityMonitor) {
+	      controlData.addSCPrivHeader(scPrivateHeaderWord);
+	    }
 
 	    int numofscword = scPrivateHeaderWord.NumberOf16bitWords();
 	    int leftword = numofscword;
 
-	    if(debug) cout<<"[DTROS25Unpacker]: SCPrivateHeader (number of data + subheader = "
+	    if(debug) cout<<"                   SC PrivateHeader (number of words + subheader = "
 			  << scPrivateHeaderWord.NumberOf16bitWords() << ")" <<endl;
 
 	    // if no SC data -> no loop ;
@@ -280,7 +284,7 @@ void DTROS25Unpacker::interpretRawData(const unsigned int* index, int datasize,
 	    if(numofscword > 0){
 
 	      int bx_received = (numofscword - 1) / 2;
-	      if(debug)  cout<<"[DTROS25Unpacker]: number of bx " << bx_received << endl;
+	      if(debug)  cout<<"                   SC number of bx read-out: " << bx_received << endl;
 
 	      wordCounter++; word = index[swap(wordCounter)];
 	      if (DTROSWordType(word).type() == DTROSWordType::SCData) {
@@ -288,13 +292,14 @@ void DTROS25Unpacker::interpretRawData(const unsigned int* index, int datasize,
 		leftword--;
 
 		DTLocalTriggerSectorCollectorSubHeaderWord scPrivateSubHeaderWord(word);
-
-		if(debug) cout <<"[DTROS25Unpacker]: SC trigger delay = "
+		// read the event BX in the SC header (will be stored in SC digis)
+		int scEventBX = scPrivateSubHeaderWord.LocalBunchCounter();
+		if(debug) cout <<"                   SC trigger delay = "
 				<< scPrivateSubHeaderWord.TriggerDelay() << endl
-				<<"[DTROS25Unpacker]: SC bunch counter = "
-				<< scPrivateSubHeaderWord.LocalBunchCounter() << endl;
+				<<"                   SC bunch counter = "
+				<< scEventBX << endl;
 		
-
+		controlData.addSCPrivSubHeader(scPrivateSubHeaderWord);
 
 		// actual loop on SC time slots
 		int stationGroup=0;
@@ -346,9 +351,8 @@ void DTROS25Unpacker::interpretRawData(const unsigned int* index, int datasize,
 			DTChamberId chamberId (SCwheel,SCstation,SCsector);
 			triggerProduct->insertDigi(chamberId,localtrigger);
 			if (debug) { 
-			  cout<<"FRC: just put in triggerProduct: "<<chamberId.wheel()
-			      <<" "<<chamberId.station()<<" "<<chamberId.sector()
-			      <<endl;;
+			  cout<<"Add SC digi to the collection, for chamber: " << chamberId
+			      <<endl;
 			  localtrigger.print(); }
 		      }
 		      if ( scDataWord.hasTrigger(1) || (scDataWord.getBits(1) & 0x30) ) {
@@ -361,10 +365,8 @@ void DTROS25Unpacker::interpretRawData(const unsigned int* index, int datasize,
 			DTChamberId chamberId (SCwheel,SCstation,SCsector);
 			triggerProduct->insertDigi(chamberId,localtrigger);
 			if(debug) { 
-			  cout <<"FRC: just put in triggerProduct: "
-			       <<chamberId.wheel()<<" "<<chamberId.station()
-			       <<" "<<chamberId.sector()
-			       <<endl;;
+			  cout<<"Add SC digi to the collection, for chamber: " << chamberId
+			      <<endl;
 			  localtrigger.print();
 			}
 		      }
@@ -380,8 +382,12 @@ void DTROS25Unpacker::interpretRawData(const unsigned int* index, int datasize,
 
 	  if (DTROSWordType(word).type() == DTROSWordType::SCTrailer) {
 	    DTLocalTriggerTrailerWord scTrailerWord(word);
-	    if (debug) cout<<"[DTROS25Unpacker]: SCTrailer, number of words "
-			   <<scTrailerWord.wordCount()<<endl;
+	    // add infos for data integrity monitoring
+	    controlData.addSCHeader(scHeaderWord);
+	    controlData.addSCTrailer(scTrailerWord);
+
+	    if (debug) cout<<"                   SC Trailer, # of words: "
+			   << scTrailerWord.wordCount() <<endl;
 	  }
 	}
 
